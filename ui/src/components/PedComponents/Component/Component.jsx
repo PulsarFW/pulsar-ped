@@ -6,20 +6,17 @@ import { Ticker } from '../../UIComponents';
 import Nui from '../../../util/Nui';
 import { connect, useSelector } from 'react-redux';
 
-const hiddenThings = {
-	accessory: [10],
-};
-
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
 	body: {
 		maxHeight: '100%',
 		overflowX: 'hidden',
 		overflowY: 'auto',
 		margin: 25,
 		display: 'grid',
-		gridGap: 0,
-		gridTemplateColumns: '49% 49%',
-		justifyContent: 'space-around',
+		gap: 8,
+		gridTemplateColumns: '1fr 1fr',
+		gridAutoRows: '84px',
+		alignItems: 'stretch',
 	},
 }));
 
@@ -32,6 +29,7 @@ export default connect()((props) => {
 	);
 
 	const classes = useStyles();
+
 	useEffect(() => {
 		Nui.send('GetNumberOfPedDrawableVariations', {
 			componentId: props.component.componentId,
@@ -40,28 +38,16 @@ export default connect()((props) => {
 
 	useEffect(() => {
 		if (!Boolean(maxDrawables)) return;
-
 		Nui.send('GetNumberOfPedTextureVariations', {
 			componentId: props.component.componentId,
 			drawableId: maxDrawables[props.component.drawableId],
 		});
-		// props.dispatch(
-		// 	SetPedComponentVariation(0, {
-		// 		type: 'textureId',
-		// 		name: props.name,
-		// 	}),
-		// );
 	}, [props.component.drawableId, maxDrawables]);
 
 	const onChange = (v, d) => {
 		return (dispatch) => {
 			dispatch(SetPedComponentVariation(maxDrawables[v], d));
-			dispatch(
-				SetPedComponentVariation(0, {
-					type: 'textureId',
-					name: props.name,
-				}),
-			);
+			dispatch(SetPedComponentVariation(0, { type: 'textureId', name: props.name }));
 		};
 	};
 
@@ -70,15 +56,8 @@ export default connect()((props) => {
 			<Ticker
 				label={props.label}
 				event={onChange}
-				data={{
-					type: 'drawableId',
-					name: props.name,
-				}}
-				current={
-					Boolean(maxDrawables)
-						? maxDrawables.indexOf(props.component.drawableId)
-						: 0
-				}
+				data={{ type: 'drawableId', name: props.name }}
+				current={Boolean(maxDrawables) ? maxDrawables.indexOf(props.component.drawableId) : 0}
 				min={0}
 				max={Boolean(maxDrawables) ? maxDrawables.length - 1 : 0}
 				disabled={props.disabled}
@@ -86,10 +65,7 @@ export default connect()((props) => {
 			<Ticker
 				label={'Texture'}
 				event={SetPedComponentVariation}
-				data={{
-					type: 'textureId',
-					name: props.name,
-				}}
+				data={{ type: 'textureId', name: props.name }}
 				current={props.component.textureId}
 				min={0}
 				max={maxTextures ? maxTextures - 1 : 0}

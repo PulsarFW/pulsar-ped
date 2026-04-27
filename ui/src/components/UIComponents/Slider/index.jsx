@@ -2,60 +2,62 @@ import React, { useState } from 'react';
 import { Grid, Slider as MSlider, Tooltip } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { useDispatch } from 'react-redux';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import Nui from '../../../util/Nui';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
 	div: {
+		boxSizing: 'border-box',
 		width: '100%',
-		fontSize: 13,
-		fontWeight: 500,
+		minHeight: 84,
+		fontSize: 12,
+		fontFamily: "'Oswald', sans-serif",
+		fontWeight: 600,
 		textAlign: 'center',
-		textDecoration: 'none',
-		textShadow: 'none',
-		whiteSpace: 'nowrap',
-		display: 'inline-block',
-		verticalAlign: 'middle',
-		padding: '10px 20px',
-		borderRadius: 3,
+		display: 'flex',
+		flexDirection: 'column',
+		justifyContent: 'center',
+		padding: '8px 14px',
+		borderRadius: 2,
 		transition: '0.1s all linear',
 		userSelect: 'none',
 		color: '#ffffff',
-		marginBottom: 5,
+		marginBottom: 4,
+		background: 'rgba(0,0,0,0.3)',
+		border: '1px solid rgba(177,76,255,0.35)',
 	},
 	label: {
 		display: 'block',
 		width: '100%',
+		letterSpacing: '0.08em',
+		textTransform: 'uppercase',
+		color: 'rgba(255,255,255,0.7)',
+		fontSize: 11,
+		marginBottom: 8,
 	},
 	slider: {
 		display: 'block',
-		position: 'relative',
-		top: '25%',
-	},
-	saveContainer: {
-		textAlign: 'right',
-		color: '#38b58fab',
-		'&:hover': {
-			color: '#38b58f59',
+		'& .MuiSlider-thumb': {
+			width: 12,
+			height: 12,
+			background: '#b14cff',
+			border: '2px solid rgba(201,125,255,0.6)',
+			'&:hover, &.Mui-focusVisible': {
+				boxShadow: '0 0 0 6px rgba(177,76,255,0.2)',
+			},
 		},
-	},
-	icon: {
-		width: '0.75em',
-		height: '100%',
-		fontSize: '1.25rem',
-		float: 'right',
-		color: theme.palette.error.light,
-		transition: 'filter ease-in 0.15s',
-		'&:hover': {
-			filter: 'brightness(0.7)',
+		'& .MuiSlider-track': {
+			background: 'linear-gradient(90deg, #7a22c9, #b14cff)',
+			border: 'none',
+		},
+		'& .MuiSlider-rail': {
+			background: 'rgba(177,76,255,0.2)',
 		},
 	},
 }));
 
 function ValueLabelComponent(props) {
 	const { children, open, value } = props;
-
 	return (
 		<Tooltip open={open} enterTouchDelay={0} placement="top" title={value}>
 			{children}
@@ -75,53 +77,23 @@ export default (props) => {
 		}
 	};
 
-	// const onSave = () => {
-	// 	if (!props.disabled && props.current !== currentValue) {
-	// 		Nui.send('FrontEndSound', { sound: 'SELECT' });
-	// 		dispatch(props.event(currentValue, props.data));
-	// 		dispatch(props.event(currentValue, props.data));
-	// 	}
-	// };
-
-	const cssClass = props.disabled ? `${classes.div} disabled` : classes.div;
-	const style = props.disabled ? { opacity: 0.5 } : {};
+	const style = props.disabled ? { opacity: 0.4 } : {};
 
 	return (
-		<div className={cssClass} style={style}>
-			<Grid container>
-				<Grid item xs={12}>
-					<span>{props.label}</span>
-				</Grid>
-				{/* <Grid
-					item
-					xs={2}
-					className={classes.saveContainer}
-					onClick={onSave}
-				>
-					{currentValue === props.current ? null : (
-						<FontAwesomeIcon
-							icon={['fas', 'circle-check']}
-							className={classes.icon}
-						/>
-					)}
-				</Grid> */}
-				<Grid item xs={12}>
-					<MSlider
-						className={classes.slider}
-						onChange={onChange}
-						components={{
-							ValueLabel: ValueLabelComponent,
-						}}
-						defaultValue={0}
-						value={currentValue}
-						disabled={props.disabled}
-						step={1}
-						min={props.min}
-						max={props.max}
-						component="div"
-					/>
-				</Grid>
-			</Grid>
+		<div className={classes.div} style={style}>
+			<span className={classes.label}>{props.label}</span>
+			<MSlider
+				className={classes.slider}
+				onChange={onChange}
+				components={{ ValueLabel: ValueLabelComponent }}
+				defaultValue={0}
+				value={currentValue}
+				disabled={props.disabled}
+				step={1}
+				min={props.min}
+				max={props.max}
+				component="div"
+			/>
 		</div>
 	);
 };

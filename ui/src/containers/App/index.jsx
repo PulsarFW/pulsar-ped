@@ -17,17 +17,7 @@ import Tattoo from '../Tattoo';
 
 library.add(fab, fas, far);
 
-const useStyles = makeStyles((theme) => ({
-	content: {
-		position: 'relative',
-		height: '100%',
-		width: '100%',
-		overflow: 'hidden',
-	},
-}));
-
 export default connect()((props) => {
-	const classes = useStyles();
 	const hidden = useSelector((state) => state.app.hidden);
 	const state = useSelector((state) => state.app.state);
 	const loading = useSelector((state) => state.app.loading);
@@ -58,7 +48,7 @@ export default connect()((props) => {
 
 	return (
 		<Fade in={!hidden}>
-			<div className="App">
+			<div className="App" style={{ height: '100vh', width: '100%' }}>
 				{loading ? <Loader /> : display}
 				<Tip />
 			</div>

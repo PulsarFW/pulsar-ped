@@ -2,9 +2,8 @@ import React from 'react';
 import { Box } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
 	tabPanel: {
-		background: theme.palette.secondary.main,
 		height: '100%',
 		overflow: 'auto',
 	},

@@ -7,14 +7,14 @@ import { Checkbox, Slider, Ticker } from '../../UIComponents';
 import { SetPedHeadOverlay } from '../../../actions/pedActions';
 import ElementBox from '../../UIComponents/ElementBox/ElementBox';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
 	body: {
 		maxHeight: '100%',
 		overflow: 'hidden',
 		margin: 25,
 		display: 'grid',
 		gridGap: 0,
-		gridTemplateColumns: '10% 45% 45%',
+		gridTemplateColumns: '10% 43% 43%',
 		justifyContent: 'space-around',
 	},
 }));

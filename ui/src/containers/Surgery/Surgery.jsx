@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Tab, Tabs, IconButton, Button, ButtonGroup } from '@mui/material';
+import { Tab, Tabs, Button } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
@@ -11,44 +11,122 @@ import { SavePed, CancelEdits } from '../../actions/pedActions';
 import Body from '../../components/Body/Body';
 import Hair from '../../components/Hair/Hair';
 import Naked from '../../components/PedComponents/Naked';
-import Nui from '../../util/Nui';
+import CamBar from '../../components/UIComponents/CamBar';
 
-const useStyles = makeStyles((theme) => ({
-	save: {
+const useStyles = makeStyles(() => ({
+	panelShell: {
 		position: 'absolute',
-		bottom: '1%',
-		right: '1%',
-		transition: 'filter ease-in 0.15s',
-		'& svg': {
-			marginLeft: 6,
-		},
-		'&:hover': {
-			filter: 'brightness(0.7)',
-		},
-	},
-	camBar: {
-		background: theme.palette.secondary.dark,
-		height: 'fit-content',
-		width: '100vw',
-	},
-	btnBar: {
-		background: theme.palette.secondary.dark,
-		width: 'fit-content',
-		height: '100vh',
-	},
-	panel: {
+		right: 20,
+		top: '4vh',
 		width: 500,
-		position: 'absolute',
-		left: 90,
-		top: 48,
-		height: 'calc(100vh - 48px)',
+		height: '92vh',
+		display: 'flex',
+		flexDirection: 'column',
+		background: 'rgba(0,0,0,0.78)',
+		border: '1px solid rgba(177,76,255,0.2)',
+		boxShadow: '0 0 0 1px rgba(177,76,255,0.06), 0 24px 80px rgba(0,0,0,0.7), 0 0 40px rgba(177,76,255,0.06)',
+		borderRadius: 2,
+		overflow: 'hidden',
+		animation: '$panelSlide 0.5s cubic-bezier(0.16, 1, 0.3, 1) both',
+	},
+	panelAccent: {
+		height: 2,
+		background: 'linear-gradient(90deg, transparent, #b14cff, transparent)',
+		flexShrink: 0,
+	},
+	panelHeader: {
+		padding: '12px 16px 10px',
+		borderBottom: '1px solid rgba(177,76,255,0.15)',
+		flexShrink: 0,
+		display: 'flex',
+		flexDirection: 'column',
+		background: 'rgba(0,0,0,0.24)',
+	},
+	panelLabel: {
+		fontSize: 9,
+		fontWeight: 700,
+		letterSpacing: '0.3em',
+		textTransform: 'uppercase',
+		color: 'rgba(177,76,255,0.7)',
+		marginBottom: 2,
+		fontFamily: "'Oswald', sans-serif",
+	},
+	panelTitle: {
+		fontFamily: "'Oswald', sans-serif",
+		fontSize: 13,
+		fontWeight: 700,
+		color: '#ffffff',
+		letterSpacing: '0.08em',
+	},
+	tabHeader: {
+		flex: '0 0 auto',
+		borderBottom: '1px solid rgba(177,76,255,0.15)',
+	},
+	tabs: { minHeight: 42 },
+	tab: {
+		minHeight: 42,
+		minWidth: 0,
+		flex: 1,
+		padding: 0,
+		opacity: 0.45,
+		color: '#ffffff',
+		fontSize: 15,
+		transition: 'opacity 0.2s ease, color 0.2s ease',
+		'&.Mui-selected': { opacity: 1, color: '#b14cff' },
+		'& svg': { fontSize: 16 },
+	},
+	panelBody: {
+		flex: '1 1 auto',
+		overflowY: 'auto',
+		padding: 12,
+	},
+	panelFooter: {
+		flexShrink: 0,
+		borderTop: '1px solid rgba(177,76,255,0.15)',
+		background: 'rgba(0,0,0,0.24)',
+		padding: '10px 12px',
+		display: 'flex',
+		justifyContent: 'flex-end',
+		gap: 8,
+	},
+	btn: {
+		height: 34,
+		padding: '0 16px',
+		borderRadius: 2,
+		textTransform: 'uppercase',
+		fontSize: 11,
+		fontWeight: 700,
+		fontFamily: "'Oswald', sans-serif",
+		letterSpacing: '0.15em',
+		border: 'none !important',
+		outline: 'none !important',
+		boxShadow: 'none !important',
+		transition: 'background 150ms ease, transform 150ms ease',
+		'&:hover': { border: 'none !important', outline: 'none !important', boxShadow: 'none !important', transform: 'translateY(-1px)' },
+		'&:focus': { border: 'none !important', outline: 'none !important', boxShadow: 'none !important' },
+		'&:active': { transform: 'translateY(0)', border: 'none !important', outline: 'none !important', boxShadow: 'none !important' },
+		'& .MuiButton-startIcon': { marginRight: 6 },
+		'& .MuiButton-startIcon svg': { fontSize: 11 },
+	},
+	btnPrimary: {
+		background: 'rgba(177,76,255,0.15)',
+		color: '#c97dff',
+		'&:hover': { background: 'rgba(177,76,255,0.28)' },
+	},
+	btnDanger: {
+		background: 'rgba(110,22,22,0.15)',
+		color: '#a13434',
+		'&:hover': { background: 'rgba(110,22,22,0.28)' },
+	},
+	'@keyframes panelSlide': {
+		'0%': { opacity: 0, transform: 'translateX(40px)' },
+		'100%': { opacity: 1, transform: 'translateX(0)' },
 	},
 }));
 
 export default (props) => {
 	const classes = useStyles();
 	const dispatch = useDispatch();
-	const camera = useSelector((state) => state.app.camera);
 	const state = useSelector((state) => state.app.state);
 	const cost = useSelector((state) => state.app.pricing.SURGERY);
 
@@ -56,24 +134,7 @@ export default (props) => {
 	const [saving, setSaving] = useState(false);
 	const [value, setValue] = useState(0);
 
-	const handleChange = (event, newValue) => {
-		setValue(newValue);
-	};
-
-	const onCamChange = async (e, newValue) => {
-		try {
-			let res = await (await Nui.send('ChangeCamera', newValue)).json();
-
-			if (res) {
-				dispatch({
-					type: 'SET_CAM',
-					payload: {
-						cam: newValue,
-					},
-				});
-			}
-		} catch (err) {}
-	};
+	const handleChange = (event, newValue) => setValue(newValue);
 
 	const onCancel = () => {
 		setCancelling(false);
@@ -87,106 +148,50 @@ export default (props) => {
 
 	return (
 		<div>
-			<div className={classes.camBar}>
-				<Tabs
-					centered
-					style={{ height: '100%' }}
-					value={camera}
-					onChange={onCamChange}
-					indicatorColor="primary"
-					textColor="primary"
-				>
-					<Tab
-						label={
-							<FontAwesomeIcon icon={['fas', 'person']} />
-						}
-					/>
-					<Tab
-						label={<FontAwesomeIcon icon={['fas', 'face-smile']} />}
-					/>
-					<Tab
-						label={
-							<FontAwesomeIcon icon={['fas', 'shirt']} />
-						}
-					/>
-					<Tab label={<FontAwesomeIcon icon={['fas', 'shoe-prints']} />} />
-				</Tabs>
-			</div>
-			<div className={classes.btnBar}>
-				<Tabs
-					orientation="vertical"
-					style={{ height: '100%' }}
-					value={value}
-					onChange={handleChange}
-					indicatorColor="primary"
-					textColor="primary"
-					variant="scrollable"
-				>
-					<Tab
-						label={
-							<FontAwesomeIcon icon={['fas', 'smile']} />
-						}
-					/>
-					<Tab
-						label={
-							<FontAwesomeIcon icon={['fas', 'child-reaching']} />
-						}
-					/>
-					<Tab
-						label={<FontAwesomeIcon icon={['fas', 'scissors']} />}
-					/>
-				</Tabs>
-			</div>
-			<div className={classes.panel} id="noHover">
-				<TabPanel value={value} index={0}>
-					<Face />
-				</TabPanel>
-				<TabPanel value={value} index={1}>
-					<Body />
-				</TabPanel>
-				<TabPanel value={value} index={2}>
-					<Hair />
-				</TabPanel>
+			<CamBar />
+			<div className={classes.panelShell}>
+				<div className={classes.panelAccent} />
+				<div className={classes.panelHeader}>
+					<span className={classes.panelLabel}>Plastic Surgeon</span>
+					<span className={classes.panelTitle}>Surgical Enhancements</span>
+				</div>
+				<div className={classes.tabHeader}>
+					<Tabs
+						orientation="horizontal"
+						value={value}
+						onChange={handleChange}
+						indicatorColor="primary"
+						textColor="primary"
+						variant="fullWidth"
+						className={classes.tabs}
+					>
+						<Tab className={classes.tab} label={<FontAwesomeIcon icon={['fas', 'smile']} />} />
+						<Tab className={classes.tab} label={<FontAwesomeIcon icon={['fas', 'child-reaching']} />} />
+						<Tab className={classes.tab} label={<FontAwesomeIcon icon={['fas', 'scissors']} />} />
+					</Tabs>
+				</div>
+				<div className={classes.panelBody} id="noHover">
+					<TabPanel value={value} index={0}><Face /></TabPanel>
+					<TabPanel value={value} index={1}><Body /></TabPanel>
+					<TabPanel value={value} index={2}><Hair /></TabPanel>
+				</div>
+				<div className={classes.panelFooter}>
+					<Button disableRipple disableElevation variant="text" className={`${classes.btn} ${classes.btnDanger}`} onClick={() => setCancelling(true)} startIcon={<FontAwesomeIcon icon={['fas', 'skull-crossbones']} />}>
+						Abort Operation
+					</Button>
+					<Button disableRipple disableElevation variant="text" className={`${classes.btn} ${classes.btnPrimary}`} onClick={() => setSaving(true)} startIcon={<FontAwesomeIcon icon={['fas', 'save']} />}>
+						Pay {CurrencyFormat.format(cost || 0)}
+					</Button>
+				</div>
 			</div>
 
 			<Naked />
-			<ButtonGroup variant="contained" className={classes.save}>
-				<Button color="error" onClick={() => setCancelling(true)}>
-					Cancel
-					<FontAwesomeIcon icon={['fas', 'x']} />
-				</Button>
-				<Button color="success" onClick={() => setSaving(true)}>
-					Save
-					<FontAwesomeIcon icon={['fas', 'save']} />
-				</Button>
-			</ButtonGroup>
 
-			<Dialog
-				title="Cancel?"
-				open={cancelling}
-				onAccept={onCancel}
-				onDecline={() => setCancelling(false)}
-				acceptLang="Yes"
-				declineLang="No"
-			>
-				<p>
-					All changes will be discarded, are you sure you want to
-					continue?
-				</p>
+			<Dialog title="Cancel?" open={cancelling} onAccept={onCancel} onDecline={() => setCancelling(false)} acceptLang="Yes" declineLang="No">
+				<p>All changes will be discarded, are you sure you want to continue?</p>
 			</Dialog>
-			<Dialog
-				title="Save?"
-				open={saving}
-				onAccept={onSave}
-				onDecline={() => setSaving(false)}
-			>
-				<p>
-					You will be charged{' '}
-					<span className={classes.highlight}>
-						{CurrencyFormat.format(cost)}
-					</span>
-					?
-				</p>
+			<Dialog title="Save?" open={saving} onAccept={onSave} onDecline={() => setSaving(false)}>
+				<p>You will be charged <span style={{ color: '#b14cff', fontWeight: 700 }}>{CurrencyFormat.format(cost)}</span>?</p>
 				<p>Are you sure you want to save?</p>
 			</Dialog>
 		</div>

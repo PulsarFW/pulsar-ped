@@ -1,74 +1,74 @@
-import React, { Fragment, useEffect, useState } from 'react';
+import React from 'react';
 import { makeStyles } from '@mui/styles';
-import { Slide } from '@mui/material';
 
-const useStyles = makeStyles((theme) => ({
-	container: {
+const useStyles = makeStyles(() => ({
+	wrapper: {
 		position: 'absolute',
-		top: 48,
-		right: 0,
-		margin: 'auto',
-		height: 40,
-		width: 'fit-content',
-		pointerEvents: 'none',
+		bottom: 14,
+		left: '50%',
+		transform: 'translateX(-50%)',
 		display: 'flex',
-		zIndex: 1,
-		background: `${theme.palette.secondary.dark}80`,
-		borderLeft: `4px solid ${theme.palette.info.main}`,
-		'& small': {
-			fontSize: 12,
-			display: 'block',
-			lineHeight: '40px',
-			padding: '0 5px',
-		},
+		alignItems: 'center',
+		padding: '8px 16px',
+		gap: 20,
+		background: 'rgba(0,0,0,0.72)',
+		border: '1px solid rgba(177,76,255,0.2)',
+		boxShadow: '0 0 20px rgba(0,0,0,0.5), 0 0 10px rgba(177,76,255,0.06)',
+		borderRadius: 2,
+		userSelect: 'none',
+		whiteSpace: 'nowrap',
 	},
-	label: {
-		color: theme.palette.text.main,
-		fontSize: 18,
-		lineHeight: '40px',
-		textShadow: '0 0 5px #000',
-		paddingLeft: 5,
-		paddingRight: 15,
-		flex: 1,
-		borderLeft: `1px solid ${theme.palette.border.divider}`,
-		height: 'fit-content',
+	row: {
 		display: 'flex',
-
-		'& .highlight': {
-			color: theme.palette.primary.main,
-			fontWeight: 'bold',
-			marginRight: 4,
-			'&:not(:first-of-type)': {
-				marginLeft: 2,
-			},
-		},
-
-		'& .sep': {
-			marginLeft: 4,
-			marginRight: 4,
-			color: theme.palette.text.alt,
-		}
+		alignItems: 'center',
+		gap: 6,
+		fontSize: 11,
+		fontFamily: "'Oswald', sans-serif",
+		fontWeight: 600,
+		textTransform: 'uppercase',
+		letterSpacing: '0.1em',
+		color: 'rgba(255,255,255,0.45)',
+	},
+	key: {
+		display: 'inline-flex',
+		alignItems: 'center',
+		justifyContent: 'center',
+		padding: '1px 7px',
+		background: 'rgba(177,76,255,0.1)',
+		border: '1px solid rgba(177,76,255,0.4)',
+		borderRadius: 2,
+		color: '#b14cff',
+		fontWeight: 700,
+		fontSize: 11,
+		letterSpacing: '0.05em',
+	},
+	sep: {
+		width: 1,
+		height: 14,
+		background: 'rgba(177,76,255,0.2)',
 	},
 }));
 
-export default ({ message }) => {
+export default () => {
 	const classes = useStyles();
 	return (
-		<Slide direction="left" in={true}>
-			<div className={classes.container}>
-				<small>HELP</small>
-				<div className={classes.label}>
-					<span className="highlight">Q</span>/
-					<span className="highlight">E</span>
-					Rotate
-					<span className="sep">|</span>
-					<span className="highlight">Mousewheel</span>
-					Zoom
-					<span className="sep">|</span>
-					<span className="highlight">R</span>
-					Animation
-				</div>
+		<div className={classes.wrapper}>
+			<div className={classes.row}>
+				<span className={classes.key}>Q</span>
+				<span>/</span>
+				<span className={classes.key}>E</span>
+				<span>Rotate</span>
 			</div>
-		</Slide>
+			<div className={classes.sep} />
+			<div className={classes.row}>
+				<span className={classes.key}>Scroll</span>
+				<span>Zoom</span>
+			</div>
+			<div className={classes.sep} />
+			<div className={classes.row}>
+				<span className={classes.key}>R</span>
+				<span>Animation</span>
+			</div>
+		</div>
 	);
 };

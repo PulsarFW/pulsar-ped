@@ -5,12 +5,11 @@ import { Slider } from '../../UIComponents';
 import { SetPedFaceFeature } from '../../../actions/pedActions';
 import ElementBox from '../../UIComponents/ElementBox/ElementBox';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
 	body: {
 		maxHeight: '100%',
 		overflowX: 'hidden',
 		overflowY: 'auto',
-		margin: 25,
 		display: 'grid',
 		gridGap: 0,
 		gridTemplateColumns: '49% 49%',
@@ -26,9 +25,7 @@ export default (props) => {
 			key={i}
 			label={item.label}
 			event={SetPedFaceFeature}
-			data={{
-				index: item.index,
-			}}
+			data={{ index: item.index }}
 			current={item.current}
 			min={-100}
 			max={100}

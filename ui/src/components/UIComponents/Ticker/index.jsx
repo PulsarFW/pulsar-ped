@@ -1,55 +1,98 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { TextField } from '@mui/material';
+import { TextField, IconButton } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import Nui from '../../../util/Nui';
-import { IconButton } from '@mui/material';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
 	div: {
-        color: theme.palette.text.main,
-        fontSize: 13,
-        height: 84,
-        width: '100%',
-        textAlign: 'center',
-        userSelect: 'none',
-        transition: 'background ease-in 0.15s',
-        marginBottom: 10,
-        borderRadius: 0,
-        lineHeight: '38px',
-        verticalAlign: 'middle',
-	},
-	slider: {
+		boxSizing: 'border-box',
+		width: '100%',
 		display: 'block',
-		position: 'relative',
-		top: '25%',
+		fontSize: 12,
+		fontFamily: "'Oswald', sans-serif",
+		fontWeight: 600,
+		textAlign: 'center',
+		borderRadius: 2,
+		transition: '0.1s all linear',
+		userSelect: 'none',
+		color: '#ffffff',
+		marginBottom: 4,
+		background: 'rgba(0,0,0,0.3)',
+		border: '1px solid rgba(177,76,255,0.35)',
+		padding: '6px 8px',
 	},
-	action: {
-		height: 80,
-		lineHeight: '80px',
-		'&:not(.disabled):hover': {
-			filter: 'brightness(0.6)',
-			transition: 'filter ease-in 0.15s',
-		},
-	},
-	textField: {
-		width: 25,
-		'& input': {
-			textAlign: 'center',
-			color: theme.palette.primary.main,
-		},
-		'& input::-webkit-clear-button, & input::-webkit-outer-spin-button, & input::-webkit-inner-spin-button':
-			{
-				display: 'none',
-			},
+	label: {
+		display: 'block',
+		gridColumn: 2,
+		gridRow: 1,
+		letterSpacing: '0.08em',
+		textTransform: 'uppercase',
+		color: 'rgba(255,255,255,0.7)',
+		fontSize: 11,
+		lineHeight: '32px',
 	},
 	wrapper: {
 		display: 'grid',
-		gridGap: 0,
-		gridTemplateColumns: '20% 60% 20%',
-		gridTemplateRows: '40px 40px',
+		gridTemplateColumns: '36px 1fr 36px',
+		gridTemplateRows: '32px 36px',
+		alignItems: 'center',
+	},
+	actionBtn: {
+		width: 32,
+		height: 32,
+		borderRadius: 2,
+		color: 'rgba(177,76,255,0.8)',
+		border: '1px solid rgba(177,76,255,0.3)',
+		background: 'rgba(177,76,255,0.1)',
+		transition: 'all 0.15s ease',
+		'&:hover:not(.disabled)': {
+			color: '#b14cff',
+			borderColor: 'rgba(177,76,255,0.6)',
+			background: 'rgba(177,76,255,0.22)',
+		},
+		'&.disabled': {
+			opacity: 0.3,
+			cursor: 'default',
+		},
+	},
+	valueBox: {
+		gridColumn: 2,
+		gridRow: 2,
+		display: 'flex',
+		alignItems: 'center',
+		justifyContent: 'center',
+		gap: 4,
+		fontSize: 13,
+		color: '#c97dff',
+		fontWeight: 700,
+	},
+	textField: {
+		width: 32,
+		'& input': {
+			textAlign: 'center',
+			color: '#c97dff',
+			fontFamily: "'Oswald', sans-serif",
+			fontWeight: 700,
+			fontSize: 14,
+			padding: '2px 0',
+		},
+		'& input::-webkit-outer-spin-button, & input::-webkit-inner-spin-button': {
+			display: 'none',
+		},
+		'& .MuiInput-underline:before': {
+			borderBottomColor: 'rgba(177,76,255,0.3)',
+		},
+		'& .MuiInput-underline:after': {
+			borderBottomColor: '#b14cff',
+		},
+	},
+	maxLabel: {
+		color: 'rgba(255,255,255,0.4)',
+		fontSize: 12,
+		fontWeight: 600,
 	},
 }));
 
@@ -57,89 +100,57 @@ export default (props) => {
 	const classes = useStyles();
 	const dispatch = useDispatch();
 
+	const min = props.min ?? 0;
+	const max = props.max;
+
+	const sendValue = (v) => {
+		Nui.send('FrontEndSound', { sound: 'UPDOWN' });
+		if (Boolean(props.onChange)) {
+			props.onChange(v, props.data);
+		} else {
+			dispatch(props.event(v, props.data));
+		}
+	};
+
 	const onLeft = () => {
 		if (props.disabled) return;
-
-		Nui.send('FrontEndSound', { sound: 'UPDOWN' });
-
-		if (Boolean(props.onChange)) {
-			props.onChange(
-				props.current - 1 < 0 ? props.max : props.current - 1,
-				props.data,
-			);
-		} else {
-			dispatch(
-				props.event(
-					props.current - 1 < 0 ? props.max : props.current - 1,
-					props.data,
-				),
-			);
-		}
+		sendValue(props.current - 1 < min ? max : props.current - 1);
 	};
 
 	const onRight = () => {
 		if (props.disabled) return;
-
-		Nui.send('FrontEndSound', { sound: 'UPDOWN' });
-
-		if (Boolean(props.onChange)) {
-			props.onChange(
-				props.current + 1 > props.max ? 0 : props.current + 1,
-				props.data,
-			);
-		} else {
-			dispatch(
-				props.event(
-					props.current + 1 > props.max ? 0 : props.current + 1,
-					props.data,
-				),
-			);
-		}
+		sendValue(props.current + 1 > max ? min : props.current + 1);
 	};
 
 	const updateIndex = (event) => {
+		if (props.disabled) return;
 		try {
-			let v = parseInt(event.target.value, 10);
-
-			if (!props.disabled) {
-				if (event.target.value > props.max) {
-					v = props.max;
-				} else if (event.target.value < props.min) {
-					v = props.min;
-				}
-				Nui.send('FrontEndSound', { sound: 'UPDOWN' });
-
-				if (Boolean(props.onChange)) {
-					props.onChange(v, props.data);
-				} else {
-					dispatch(props.event(v, props.data));
-				}
-			}
-		} catch (err) {
-			//console.log(err);
-		}
+			const raw = event.target.value;
+			if (raw === '') return;
+			let v = parseInt(raw, 10);
+			if (Number.isNaN(v)) return;
+			if (v > max) v = min;
+			else if (v < min) v = max;
+			sendValue(v);
+		} catch (err) {}
 	};
 
-	const cssClass = props.disabled ? `${classes.div} disabled` : classes.div;
-	const style = props.disabled ? { opacity: 0.5 } : {};
+	const style = props.disabled ? { opacity: 0.4 } : {};
 
 	return (
-		<div className={cssClass} style={style}>
+		<div className={classes.div} style={style}>
 			<div className={classes.wrapper}>
-				<div style={{ gridColumn: 2, gridRow: 1 }}>{props.label}</div>
-				<div
-					className={`${classes.action}${
-						props.disabled || props.current === 0 ? ' disabled' : ''
-					}`}
+				<span className={classes.label} style={{ gridColumn: 2, gridRow: 1 }}>
+					{props.label}
+				</span>
+				<IconButton
+					className={`${classes.actionBtn}${props.disabled ? ' disabled' : ''}`}
+					onClick={onLeft}
+					style={{ gridColumn: 1, gridRow: 2 }}
 				>
-					<IconButton
-						onClick={onLeft}
-						style={{ gridColumn: 1, gridRow: '1 / 2' }}
-					>
-						<FontAwesomeIcon icon={['fas', 'chevron-left']} />
-					</IconButton>
-				</div>
-				<div style={{ gridColumn: 2, gridRow: 2 }}>
+					<FontAwesomeIcon icon={['fas', 'chevron-left']} style={{ fontSize: 11 }} />
+				</IconButton>
+				<div className={classes.valueBox}>
 					<TextField
 						variant="standard"
 						value={props.current}
@@ -147,27 +158,17 @@ export default (props) => {
 						onChange={updateIndex}
 						disabled={props.disabled}
 						type="number"
-						pattern="[0-9]*"
-						inputProps={{
-							min: props.min,
-							max: props.max,
-							step: 1,
-						}}
-					/>{' '}
-					/ {props.max}
+						inputProps={{ min, max, step: 1 }}
+					/>
+					<span className={classes.maxLabel}>/ {max}</span>
 				</div>
-				<div
-					className={`${classes.action}${
-						props.disabled || props.current === 0 ? ' disabled' : ''
-					}`}
+				<IconButton
+					className={`${classes.actionBtn}${props.disabled ? ' disabled' : ''}`}
+					onClick={onRight}
+					style={{ gridColumn: 3, gridRow: 2 }}
 				>
-					<IconButton
-						onClick={onRight}
-						style={{ gridColumn: 1, gridRow: '1 / 2' }}
-					>
-						<FontAwesomeIcon icon={['fas', 'chevron-right']} />
-					</IconButton>
-				</div>
+					<FontAwesomeIcon icon={['fas', 'chevron-right']} style={{ fontSize: 11 }} />
+				</IconButton>
 			</div>
 		</div>
 	);

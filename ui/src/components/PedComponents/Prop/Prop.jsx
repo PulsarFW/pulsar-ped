@@ -1,20 +1,21 @@
 import ElementBox from '../../UIComponents/ElementBox/ElementBox';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { makeStyles } from '@mui/styles';
 import { Checkbox, Ticker } from '../../UIComponents';
 import { SetPedPropIndex } from '../../../actions/pedActions';
 import { useDispatch, useSelector } from 'react-redux';
 import Nui from '../../../util/Nui';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
 	body: {
 		maxHeight: '100%',
 		overflow: 'hidden',
 		margin: 25,
 		display: 'grid',
-		gridGap: 0,
-		gridTemplateColumns: '10% 45% 45%',
-		justifyContent: 'space-around',
+		gap: 8,
+		gridTemplateColumns: '10% 1fr 1fr',
+		gridAutoRows: '84px',
+		alignItems: 'stretch',
 	},
 }));
 
@@ -29,45 +30,27 @@ export default (props) => {
 		(state) => state.app.textures.props[props.prop.componentId],
 	);
 
-	useEffect(() => {
-		Nui.send('GetNumberOfPedPropDrawableVariations', {
-			componentId: props.prop.componentId,
-		});
+	React.useEffect(() => {
+		Nui.send('GetNumberOfPedPropDrawableVariations', { componentId: props.prop.componentId });
 	}, []);
 
-	useEffect(() => {
+	React.useEffect(() => {
 		Nui.send('GetNumberOfPedPropTextureVariations', {
 			componentId: props.prop.componentId,
 			drawableId: props.prop.drawableId,
 		});
-		// dispatch(
-		// 	SetPedPropIndex(0, {
-		// 		type: 'textureId',
-		// 		name: props.name,
-		// 	}),
-		// );
 	}, [props.prop.drawableId, maxDrawables]);
 
 	const onChange = (v, d) => {
 		return (dispatch) => {
 			dispatch(SetPedPropIndex(v, d));
-			dispatch(
-				SetPedPropIndex(0, {
-					type: 'textureId',
-					name: props.name,
-				}),
-			);
+			dispatch(SetPedPropIndex(0, { type: 'textureId', name: props.name }));
 		};
 	};
 
 	const onClick = () => {
 		Nui.send('FrontEndSound', { sound: 'SELECT' });
-		dispatch(
-			SetPedPropIndex(!props.prop.disabled, {
-				type: 'disabled',
-				name: props.name,
-			}),
-		);
+		dispatch(SetPedPropIndex(!props.prop.disabled, { type: 'disabled', name: props.name }));
 	};
 
 	return (
@@ -76,10 +59,7 @@ export default (props) => {
 			<Ticker
 				label={props.label}
 				event={onChange}
-				data={{
-					type: 'drawableId',
-					name: props.name,
-				}}
+				data={{ type: 'drawableId', name: props.name }}
 				current={props.prop.drawableId}
 				min={0}
 				max={maxDrawables ? maxDrawables.length - 1 : 0}
@@ -88,10 +68,7 @@ export default (props) => {
 			<Ticker
 				label={'Texture'}
 				event={SetPedPropIndex}
-				data={{
-					type: 'textureId',
-					name: props.name,
-				}}
+				data={{ type: 'textureId', name: props.name }}
 				current={props.prop.textureId}
 				min={0}
 				max={maxTextures ? maxTextures - 1 : 0}
