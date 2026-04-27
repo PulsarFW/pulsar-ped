@@ -1,23 +1,26 @@
 import React from 'react';
 import { makeStyles } from '@mui/styles';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
 	wrapper: {
-		padding: 30,
-		color: theme.palette.text.main,
+		padding: '20px 16px',
+		color: '#ffffff',
 		overflowX: 'hidden',
 		overflowY: 'auto',
-		'&::-webkit-scrollbar': {
-			width: 6,
-		},
+		'&::-webkit-scrollbar': { width: 4 },
 		'&::-webkit-scrollbar-thumb': {
-			background: '#131317',
+			background: 'rgba(177,76,255,0.3)',
+			borderRadius: 2,
+		},
+		'&::-webkit-scrollbar-thumb:hover': {
+			background: 'rgba(177,76,255,0.55)',
 		},
 		'&::-webkit-scrollbar-track': {
-			background: theme.palette.secondary.main,
+			background: 'transparent',
 		},
 	},
 }));
+
 export default (props) => {
 	const classes = useStyles();
 	return <div className={classes.wrapper}>{props.children}</div>;

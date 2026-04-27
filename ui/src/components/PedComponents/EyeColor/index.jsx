@@ -1,51 +1,27 @@
 import ElementBox from '../../UIComponents/ElementBox/ElementBox';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { makeStyles } from '@mui/styles';
 import { SetPedEyeColor } from '../../../actions/pedActions';
 import { Ticker } from '../../UIComponents';
-import Nui from '../../../util/Nui';
-import { connect, useSelector } from 'react-redux';
+import { connect } from 'react-redux';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
 	body: {
 		maxHeight: '100%',
 		overflowX: 'hidden',
 		overflowY: 'auto',
-		margin: 25,
 		justifyContent: 'space-around',
 	},
 }));
 
 const EyeColors = [
-	'Black',
-	'Light Blue/Green',
-	'Dark Blue',
-	'Brown',
-	'Dark Brown',
-	'Light Brown',
-	'Blue',
-	'Light Blue',
-	'Pink',
-	'Yellow',
-	'Purple',
-	'Black',
-	'Dark Green',
-	'Light Brown',
-	'Yellow/Black Pattern',
-	'Light Spiral',
-	'Chromatic Red',
-	'Chromatic Red/Blue',
-	'Black & Blue',
-	'Red & White',
-	'Green Snake',
-	'Red Snake',
-	'Dark Blue Snake',
-	'Dark Yellow',
-	'Bright Yellow',
-	'Solid Black',
-	'Blue & Black Devil',
-	'Small White Pupil',
-	'Glossed Over',
+	'Black', 'Light Blue/Green', 'Dark Blue', 'Brown', 'Dark Brown',
+	'Light Brown', 'Blue', 'Light Blue', 'Pink', 'Yellow', 'Purple',
+	'Black', 'Dark Green', 'Light Brown', 'Yellow/Black Pattern',
+	'Light Spiral', 'Chromatic Red', 'Chromatic Red/Blue', 'Black & Blue',
+	'Red & White', 'Green Snake', 'Red Snake', 'Dark Blue Snake',
+	'Dark Yellow', 'Bright Yellow', 'Solid Black', 'Blue & Black Devil',
+	'Small White Pupil', 'Glossed Over',
 ];
 
 export default connect()((props) => {
@@ -56,10 +32,7 @@ export default connect()((props) => {
 			<Ticker
 				label={props.label}
 				event={SetPedEyeColor}
-				data={{
-					type: 'drawableId',
-					name: props.name,
-				}}
+				data={{ type: 'drawableId', name: props.name }}
 				current={props.component}
 				min={0}
 				max={EyeColors.length - 1}

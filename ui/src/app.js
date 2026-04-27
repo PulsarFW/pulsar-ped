@@ -11,9 +11,7 @@ import {
 } from '@mui/material';
 
 import App from 'containers/App';
-
 import WindowListener from 'containers/WindowListener';
-
 import configureStore from './configureStore';
 import KeyListener from './containers/KeyListener';
 
@@ -24,19 +22,19 @@ const MOUNT_NODE = document.getElementById('app');
 const render = () => {
 	const muiTheme = createTheme({
 		typography: {
-            fontFamily: ['Source Sans Pro'],
+			fontFamily: ["'Oswald'", 'sans-serif'],
 		},
 		palette: {
 			primary: {
-				main: '#E5A502',
-				light: '#E8A933',
-				dark: '#FA5800',
+				main: '#b14cff',
+				light: '#c97dff',
+				dark: '#7a22c9',
 				contrastText: '#ffffff',
 			},
 			secondary: {
-				main: '#141414',
-				light: '#1c1c1c',
-				dark: '#0f0f0f',
+				main: '#000000',
+				light: '#111111',
+				dark: '#000000',
 				contrastText: '#ffffff',
 			},
 			error: {
@@ -85,63 +83,78 @@ const render = () => {
 		components: {
 			MuiCssBaseline: {
 				styleOverrides: {
-					'.fade-enter': {
-						opacity: 0,
-					},
-					'.fade-exit': {
-						opacity: 1,
-					},
-					'.fade-enter-active': {
-						opacity: 1,
-					},
-					'.fade-exit-active': {
-						opacity: 0,
-					},
-					'.fade-enter-active, .fade-exit-active': {
-						transition: 'opacity 500ms',
+					html: {
+						background:
+							process.env.NODE_ENV != 'production'
+								? '#000000'
+								: 'transparent',
 					},
 					'*': {
-						'&::-webkit-scrollbar': {
-							width: 6,
-						},
+						'&::-webkit-scrollbar': { width: 4 },
 						'&::-webkit-scrollbar-thumb': {
-							background: '#FA5800',
+							background: 'rgba(177,76,255,0.3)',
+							borderRadius: 2,
 							transition: 'background ease-in 0.15s',
 						},
 						'&::-webkit-scrollbar-thumb:hover': {
-							background: '#E8A933',
+							background: 'rgba(177,76,255,0.55)',
 						},
 						'&::-webkit-scrollbar-track': {
 							background: 'transparent',
 						},
-					},
-					html: {
-						background:
-							process.env.NODE_ENV != 'production'
-								? '#1e1e1e'
-								: 'transparent',
 					},
 				},
 			},
 			MuiTooltip: {
 				styleOverrides: {
 					tooltip: {
-						fontSize: 16,
-						backgroundColor: '#151515',
-						border: '1px solid rgba(255, 255, 255, 0.23)',
-						boxShadow: `0 0 10px #000`,
+						fontSize: 12,
+						fontFamily: "'Oswald', sans-serif",
+						fontWeight: 600,
+						backgroundColor: 'rgba(0,0,0,0.82)',
+						border: '1px solid rgba(177,76,255,0.25)',
+						boxShadow: '0 4px 16px rgba(0,0,0,0.6)',
+						color: '#ffffff',
 					},
 				},
 			},
-			MuiPaper: {
+			MuiAppBar: {
 				styleOverrides: {
 					root: {
-						background: '#0f0f0f',
+						backgroundImage: 'none',
+					},
+					colorTransparent: {
+						backgroundColor: 'transparent',
+						border: '1px solid rgba(177,76,255,0.2)',
+						boxShadow: 'none',
+					},
+				},
+			},
+			MuiTab: {
+				styleOverrides: {
+					root: {
+						fontFamily: "'Oswald', sans-serif",
+						fontWeight: 700,
+						fontSize: 12,
+						letterSpacing: '0.1em',
+						color: 'rgba(255,255,255,0.6)',
+						transition: 'color 0.2s ease',
+						'&.Mui-selected': {
+							color: '#b14cff',
+						},
+					},
+				},
+			},
+			MuiTabs: {
+				styleOverrides: {
+					indicator: {
+						backgroundColor: '#b14cff',
 					},
 				},
 			},
 		},
 	});
+
 	ReactDOM.render(
 		<Provider store={store}>
 			<KeyListener>
