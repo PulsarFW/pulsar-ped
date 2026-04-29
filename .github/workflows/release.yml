@@ -35,7 +35,7 @@ jobs:
         run: |
           mkdir -p ./temp/pulsar-ped
           cp ./{README.md,fxmanifest.lua,config.lua,storeData.lua,tattoos.lua} ./temp/pulsar-ped
-          cp -r ./{client,server} ./temp/pulsar-ped
+          cp -r ./{client,server,utils} ./temp/pulsar-ped
           cp -r ./ui ./temp/pulsar-ped/ui
           rm -rf ./temp/pulsar-ped/ui/node_modules
           cd ./temp && zip -r ../pulsar-ped.zip ./pulsar-ped
