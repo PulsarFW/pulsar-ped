@@ -1,4 +1,4 @@
-name("Sandbox RP Framework - Clothing System")
+name("Pulsar Framework - Clothing System")
 author("[Alzar]")
 lua54("yes")
 fx_version("cerulean")
